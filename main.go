@@ -4,7 +4,7 @@ Copyright © 2026 NAME HERE <EMAIL ADDRESS>
 */
 package main
 
-import "fluidlist/cmd"
+import "github.com/schmudu/fluidlist/cmd"
 
 func main() {
 	cmd.Execute()
