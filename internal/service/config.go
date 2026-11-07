@@ -6,8 +6,10 @@ import (
 	"os"
 )
 
-const DIR_LISTS = "lists"
-const DIR_ITEMS = "items"
+const (
+	DIR_LISTS = "lists"
+	DIR_ITEMS = "items"
+)
 
 func ValidateWorkspace() {
 	fmt.Println("INFO: Validating workspace")
@@ -19,14 +21,14 @@ func validateDirLists(workspaceDir string) {
 	listsPath := workspaceDir + "/" + DIR_LISTS
 	exists := common.FolderExists(listsPath)
 	if !exists {
-		fmt.Printf("ERROR: Lists directory '%s' does not exist.  Run '%s' and try again.", listsPath, "fl init")
+		fmt.Printf("ERROR: Lists directory '%s' does not exist.  Run '%s' and try again.\n", listsPath, "fl init")
 		os.Exit(1)
 	}
 
 	dirPath := workspaceDir + "/" + DIR_ITEMS
 	exists = common.FolderExists(dirPath)
 	if !exists {
-		fmt.Printf("ERROR: Items directory '%s' does not exist.  Run '%s' and try again.", dirPath, "fl init")
+		fmt.Printf("ERROR: Items directory '%s' does not exist.  Run '%s' and try again.\n", dirPath, "fl init")
 		os.Exit(1)
 	}
 }
