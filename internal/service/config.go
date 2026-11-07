@@ -1,31 +1,36 @@
 package service
 
 import (
-	"errors"
 	"fmt"
+	"github.com/schmudu/fluidlist/internal/common"
 	"os"
 )
 
-func ValidateConfig() {
-	fmt.Println("INFO: Validating config")
-	validateDirLists()
+const DIR_LISTS = "lists"
+const DIR_ITEMS = "items"
+
+func ValidateWorkspace() {
+	fmt.Println("INFO: Validating workspace")
+	workspaceDir := getWorkspaceDir()
+	validateDirLists(workspaceDir)
 }
 
-func validateDirLists() {
-	dirPath := "./patrick"
-
-	info, err := os.Stat(dirPath)
-	if err == nil {
-		// The path exists, now check if it's actually a directory
-		if info.IsDir() {
-			fmt.Println("Directory exists.")
-		} else {
-			fmt.Println("Path exists, but it's a file, not a directory.")
-		}
-	} else if errors.Is(err, os.ErrNotExist) {
-		fmt.Println("Directory does not exist.")
-	} else {
-		// The directory might exist, but we can't read it (e.g., permission denied)
-		fmt.Printf("Error checking directory: %v\n", err)
+func validateDirLists(workspaceDir string) {
+	listsPath := workspaceDir + "/" + DIR_LISTS
+	exists := common.FolderExists(listsPath)
+	if !exists {
+		fmt.Printf("ERROR: Lists directory '%s' does not exist.  Run '%s' and try again.", listsPath, "fl init")
+		os.Exit(1)
 	}
+
+	dirPath := workspaceDir + "/" + DIR_ITEMS
+	exists = common.FolderExists(dirPath)
+	if !exists {
+		fmt.Printf("ERROR: Items directory '%s' does not exist.  Run '%s' and try again.", dirPath, "fl init")
+		os.Exit(1)
+	}
+}
+
+func getWorkspaceDir() string {
+	return os.Getenv("HOME")
 }

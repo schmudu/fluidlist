@@ -16,7 +16,7 @@ var addCmd = &cobra.Command{
 	Long:  `Add item to current list.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("add called")
-		service.ValidateConfig()
+		service.ValidateWorkspace()
 	},
 }
 
