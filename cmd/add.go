@@ -11,10 +11,12 @@ import (
 // addCmd represents the add command
 var addCmd = &cobra.Command{
 	Use:   "add",
-	Short: "A brief description of your command",
+	Short: "Add item",
 	Long:  `Add item to current list.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		service.ValidateWorkspace()
+		title, _ := cmd.Flags().GetString("title")
+		service.AddItem(title)
 	},
 }
 
@@ -29,5 +31,6 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// addCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	//addCmd.Flags().BoolP("title", "t", false, "Item title")
+	addCmd.Flags().StringP("title", "t", "", "Title of item")
 }

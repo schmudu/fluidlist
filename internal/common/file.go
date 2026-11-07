@@ -64,7 +64,6 @@ func FolderExists(path string) bool {
 	if err == nil {
 		// The path exists, now check if it's actually a directory
 		if info.IsDir() {
-			fmt.Println("Directory exists.")
 			return true
 		}
 	}
