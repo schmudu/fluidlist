@@ -52,9 +52,8 @@ func FileExists(path string) bool {
 }
 
 func CreateFolder(path string) error {
-	err := os.MkdirAll(path, os.ModePerm)
+	err := os.Mkdir(path, os.ModePerm)
 	if err != nil {
-		fmt.Printf("Error creating folder: %v\n", err)
 		return err
 	}
 	return nil

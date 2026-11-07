@@ -4,7 +4,6 @@ Copyright © 2026 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
 	"github.com/schmudu/fluidlist/internal/service"
 	"github.com/spf13/cobra"
 )
@@ -15,7 +14,6 @@ var addCmd = &cobra.Command{
 	Short: "A brief description of your command",
 	Long:  `Add item to current list.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("add called")
 		service.ValidateWorkspace()
 	},
 }
