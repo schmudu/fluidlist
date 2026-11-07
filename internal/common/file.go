@@ -57,7 +57,6 @@ func CreateFolder(path string) error {
 		fmt.Printf("Error creating folder: %v\n", err)
 		return err
 	}
-	fmt.Printf("%s folder created successfully!", path)
 	return nil
 }
 

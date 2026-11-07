@@ -25,13 +25,15 @@ func InitializeWorkspace() {
 
 func initializeDirs(workspaceDir string) {
 	// create lists dir
-	ok := common.CreateFolder(listsPath(workspaceDir))
-	if ok != nil {
-		fmt.Printf("ERROR: Unabled to create directory: %s", listsPath(workspaceDir))
+	errors := common.CreateFolder(listsPath(workspaceDir))
+	if errors != nil {
+		fmt.Printf("ERROR: Unabled to create directory: %s\n", listsPath(workspaceDir))
 	}
-	// create items dir
-	fmt.Printf("INFO: Going to create lists directory: %s\n", listsPath(workspaceDir))
-
+	errors = common.CreateFolder(itemsPath(workspaceDir))
+	if errors != nil {
+		fmt.Printf("ERROR: Unabled to create directory: %s\n", listsPath(workspaceDir))
+	}
+	fmt.Printf("INFO: Workspace folders created and initialized: %s\n", workspaceDir)
 }
 
 func validateDirLists(workspaceDir string) {
