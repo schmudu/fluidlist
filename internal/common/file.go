@@ -1,10 +1,65 @@
 package common
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
 )
+
+type User struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	Age   int    `json:"age"`
+}
+
+func WriteFile() {
+	data := User{Name: "Alice Smith", Email: "alice@example.com", Age: 30}
+
+	// 1. Create or open the file
+	file, err := os.Create("user.json")
+	if err != nil {
+		fmt.Printf("Error creating file: %v\n", err)
+		return
+	}
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			fmt.Printf("Error closing file: %v\n", err)
+		}
+	}(file)
+
+	// 2. Initialize the encoder and write directly to the file
+	encoder := json.NewEncoder(file)
+
+	// Optional: Pretty-print the JSON output
+	encoder.SetIndent("", "  ")
+
+	if err := encoder.Encode(data); err != nil {
+		fmt.Printf("Error encoding JSON: %v\n", err)
+		return
+	}
+
+	fmt.Println("JSON file written successfully using NewEncoder!")
+}
+
+func FileExists(path string) bool {
+	info, err := os.Stat(path)
+	if errors.Is(err, os.ErrNotExist) {
+		return false
+	}
+	return !info.IsDir()
+}
+
+func CreateFolder(path string) error {
+	err := os.MkdirAll(path, os.ModePerm)
+	if err != nil {
+		fmt.Printf("Error creating folder: %v\n", err)
+		return err
+	}
+	fmt.Printf("%s folder created successfully!", path)
+	return nil
+}
 
 func FolderExists(path string) bool {
 	info, err := os.Stat(path)
@@ -13,14 +68,7 @@ func FolderExists(path string) bool {
 		if info.IsDir() {
 			fmt.Println("Directory exists.")
 			return true
-		} else {
-			fmt.Println("Path exists, but it's a file, not a directory.")
 		}
-	} else if errors.Is(err, os.ErrNotExist) {
-		fmt.Println("Directory does not exist.")
-	} else {
-		// The directory might exist, but we can't read it (e.g., permission denied)
-		fmt.Printf("Error checking directory: %v\n", err)
 	}
 	return false
 }
