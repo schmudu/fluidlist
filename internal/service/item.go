@@ -8,5 +8,5 @@ import (
 
 func AddItem(title string) {
 	fmt.Printf("Adding item: %s...\n", title)
-	common.WriteFile()
+	common.WriteFileBytes()
 }
