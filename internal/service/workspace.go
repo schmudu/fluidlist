@@ -31,12 +31,18 @@ func initializeDir(folderPath string) bool {
 	return dirCreated
 }
 
+func createDefaultList(folderPath string) {
+	checksum := common.GetChecksum([]byte("hello world"))
+	fmt.Printf("Checksum: %s\n", checksum)
+}
+
 func initializeDirs(workspaceDir string) {
 	// create root dir
 	initializeDir(workspaceDir)
 
 	// create lists and items
 	var dirCreated = initializeDir(listsPath(workspaceDir))
+	createDefaultList(listsPath(workspaceDir))
 
 	if dirCreated {
 		initializeDir(itemsPath(workspaceDir))

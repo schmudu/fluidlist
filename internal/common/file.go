@@ -14,14 +14,12 @@ type User struct {
 	Age   int    `json:"age"`
 }
 
-func WriteFileBytes() {
-	data := []byte("Hello, Gophers!\n")
-
-	// 0644 sets standard read/write permissions for the owner
-	err := os.WriteFile("output.txt", data, 0644)
+func WriteFileBytes(path string, content []byte) error {
+	err := os.WriteFile(path, content, 0644)
 	if err != nil {
 		log.Fatalf("Failed to write file: %s", err)
 	}
+	return err
 }
 
 func WriteFile() {
