@@ -8,8 +8,10 @@ import (
 )
 
 const (
-	DirLists = "lists"
-	DirItems = "items"
+	DirLists    = "lists"
+	DirItems    = "items"
+	DefaultList = "default"
+	ContextFile = "context"
 )
 
 func ValidateWorkspace() {
@@ -37,13 +39,16 @@ func createDefaultList(folderPath string) {
 	fmt.Printf("Checksum: %s time: %s epoch:%s\n", checksum, currentTime, common.CurrentTimeEpoch())
 
 	// write file default list in lists folder
-	common.WriteFileBytes(folderPath+"/default", nil)
+	common.WriteFileBytes(folderPath+"/"+DefaultList, nil)
 	// write checksum in .context file in .fluidlists dir
 }
 
 func initializeDirs(workspaceDir string) {
 	// create root dir
 	initializeDir(workspaceDir)
+
+	// create context file - tracks current list
+	common.WriteFileBytes(workspaceDir+"/"+ContextFile, []byte(DefaultList))
 
 	// create lists and items
 	var dirCreated = initializeDir(listsPath(workspaceDir))
