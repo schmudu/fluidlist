@@ -32,8 +32,12 @@ func initializeDir(folderPath string) bool {
 }
 
 func createDefaultList(folderPath string) {
-	checksum := common.GetChecksum([]byte("hello world"))
-	fmt.Printf("Checksum: %s\n", checksum)
+	currentTime := common.CurrentTimeEpoch()
+	checksum := common.GetChecksum([]byte(currentTime))
+	fmt.Printf("Checksum: %s time: %s epoch:%s\n", checksum, currentTime, common.CurrentTimeEpoch())
+
+	// write file default list in lists folder
+	// write checksum in .context file in .fluidlists dir
 }
 
 func initializeDirs(workspaceDir string) {
