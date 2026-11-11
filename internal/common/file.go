@@ -14,6 +14,10 @@ type User struct {
 	Age   int    `json:"age"`
 }
 
+func GetChecksumFilepath(checksum string) {
+
+}
+
 func WriteFileBytes(path string, content []byte) error {
 	err := os.WriteFile(path, content, 0644)
 	if err != nil {

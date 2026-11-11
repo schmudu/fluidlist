@@ -15,8 +15,8 @@ var addCmd = &cobra.Command{
 	Long:  `Add item to current list.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		service.ValidateWorkspace()
-		title, _ := cmd.Flags().GetString("title")
-		service.AddItem(title)
+		//title, _ := cmd.Flags().GetString("title")
+		service.AddItem(args)
 	},
 }
 
@@ -32,5 +32,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	//addCmd.Flags().BoolP("title", "t", false, "Item title")
-	addCmd.Flags().StringP("title", "t", "", "Title of item")
+	//addCmd.Flags().StringP("title", "t", "", "Title of item")
 }

@@ -15,12 +15,12 @@ const (
 )
 
 func ValidateWorkspace() {
-	validateDirLists(getWorkspaceDir())
-	validateDirItems(getWorkspaceDir())
+	validateDirLists()
+	validateDirItems()
 }
 
 func InitializeWorkspace() {
-	workspaceDir := getWorkspaceDir()
+	workspaceDir := GetWorkspaceDir()
 	initializeDirs(workspaceDir)
 }
 
@@ -40,7 +40,6 @@ func createDefaultList(folderPath string) {
 
 	// write file default list in lists folder
 	common.WriteFileBytes(folderPath+"/"+DefaultList, nil)
-	// write checksum in .context file in .fluidlists dir
 }
 
 func initializeDirs(workspaceDir string) {
@@ -50,12 +49,13 @@ func initializeDirs(workspaceDir string) {
 	// create context file - tracks current list
 	common.WriteFileBytes(workspaceDir+"/"+ContextFile, []byte(DefaultList))
 
-	// create lists and items
-	var dirCreated = initializeDir(listsPath(workspaceDir))
-	createDefaultList(listsPath(workspaceDir))
+	// create lists dir
+	var dirCreated = initializeDir(GetListsPath())
+	createDefaultList(GetListsPath())
 
 	if dirCreated {
-		initializeDir(itemsPath(workspaceDir))
+		// create items dir
+		initializeDir(GetItemsPath())
 	}
 
 	if dirCreated {
@@ -65,30 +65,30 @@ func initializeDirs(workspaceDir string) {
 	}
 }
 
-func validateDirLists(workspaceDir string) {
-	ok := common.FolderExists(listsPath(workspaceDir))
+func validateDirLists() {
+	ok := common.FolderExists(GetListsPath())
 	if !ok {
-		fmt.Printf("ERROR: Lists directory '%s' does not exist.  Run '%s' and try again.\n", listsPath(workspaceDir), "fl init")
+		fmt.Printf("ERROR: Lists directory '%s' does not exist.  Run '%s' and try again.\n", GetListsPath(), "fl init")
 		os.Exit(1)
 	}
 }
 
-func validateDirItems(workspaceDir string) {
-	ok := common.FolderExists(itemsPath(workspaceDir))
+func validateDirItems() {
+	ok := common.FolderExists(GetItemsPath())
 	if !ok {
-		fmt.Printf("ERROR: Items directory '%s' does not exist.  Run '%s' and try again.\n", itemsPath(workspaceDir), "fl init")
+		fmt.Printf("ERROR: Items directory '%s' does not exist.  Run '%s' and try again.\n", GetItemsPath(), "fl init")
 		os.Exit(1)
 	}
 }
 
-func getWorkspaceDir() string {
+func GetWorkspaceDir() string {
 	return os.Getenv("HOME") + "/.fluidlist"
 }
 
-func itemsPath(workspaceDir string) string {
-	return workspaceDir + "/" + DirItems
+func GetItemsPath() string {
+	return GetWorkspaceDir() + "/" + DirItems
 }
 
-func listsPath(workspaceDir string) string {
-	return workspaceDir + "/" + DirLists
+func GetListsPath() string {
+	return GetWorkspaceDir() + "/" + DirLists
 }
