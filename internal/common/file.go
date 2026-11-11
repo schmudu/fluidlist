@@ -64,6 +64,21 @@ func FileExists(path string) bool {
 	return !info.IsDir()
 }
 
+func AppendToFile(path string, content []byte) error {
+	// Open the file in append mode, creating it if it doesn't exist
+	f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+
+	// Append text to the file
+	if _, err := f.WriteString(string(content) + "\n"); err != nil {
+		log.Fatal(err)
+	}
+	return nil
+}
+
 func CreateFolder(path string) error {
 	err := os.Mkdir(path, os.ModePerm)
 	if err != nil {

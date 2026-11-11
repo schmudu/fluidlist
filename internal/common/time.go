@@ -11,7 +11,7 @@ func CurrentTimeEpoch() string {
 	return strconv.FormatInt(now.Unix(), 10)
 }
 
-func CurrentTime() string {
+func CurrentTimeDateOnly() string {
 	now := time.Now()
 
 	// Output: "2026-11-09" (based on current date)

@@ -34,10 +34,6 @@ func initializeDir(folderPath string) bool {
 }
 
 func createDefaultList(folderPath string) {
-	currentTime := common.CurrentTimeEpoch()
-	checksum := common.GetChecksum([]byte(currentTime))
-	fmt.Printf("Checksum: %s time: %s epoch:%s\n", checksum, currentTime, common.CurrentTimeEpoch())
-
 	// write file default list in lists folder
 	common.WriteFileBytes(folderPath+"/"+DefaultList, nil)
 }

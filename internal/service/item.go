@@ -6,6 +6,10 @@ import (
 	"github.com/schmudu/fluidlist/internal/common"
 )
 
+const (
+	ItemsDelimiter = ","
+)
+
 func AddItem(title []string) {
 	checksum := common.GetChecksum([]byte(common.CurrentTimeEpoch()))
 	folder, file := getItemPath(checksum)
@@ -13,12 +17,20 @@ func AddItem(title []string) {
 	folderPath := GetItemsPath() + "/" + folder
 	common.CreateFolder(folderPath)
 
-	byteSlice := []byte(strings.Join(title, " "))
-	common.WriteFileBytes(folderPath+"/"+file, byteSlice)
+	titleBytes := []byte(strings.Join(title, " "))
+	date := common.CurrentTimeDateOnly()
+	completed := getDefaultCompletion()
+	common.WriteFileBytes(folderPath+"/"+file, append([]byte(date+ItemsDelimiter+completed+ItemsDelimiter), titleBytes...))
 
 	// write checksum to list
+	listPath := GetListsPath() + "/" + "default"
+	common.AppendToFile(listPath, []byte(checksum))
+}
+
+func getDefaultCompletion() string {
+	return "false"
 }
 
 func getItemPath(checksum string) (string, string) {
-	return checksum[0:5], checksum[5:]
+	return checksum[0:4], checksum[4:]
 }
