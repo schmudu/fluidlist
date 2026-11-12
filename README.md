@@ -1,3 +1,4 @@
+# README
 # build
 `go build -o fluidlist`
 
