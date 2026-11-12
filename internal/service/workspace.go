@@ -11,8 +11,19 @@ const (
 	DirLists    = "lists"
 	DirItems    = "items"
 	DefaultList = "default"
-	ContextFile = "context"
 )
+
+func GetWorkspaceDir() string {
+	return os.Getenv("HOME") + "/.fluidlist"
+}
+
+func GetItemsPath() string {
+	return GetWorkspaceDir() + "/" + DirItems
+}
+
+func GetListsPath() string {
+	return GetWorkspaceDir() + "/" + DirLists
+}
 
 func ValidateWorkspace() {
 	validateDirLists()
@@ -75,16 +86,4 @@ func validateDirItems() {
 		fmt.Printf("ERROR: Items directory '%s' does not exist.  Run '%s' and try again.\n", GetItemsPath(), "fl init")
 		os.Exit(1)
 	}
-}
-
-func GetWorkspaceDir() string {
-	return os.Getenv("HOME") + "/.fluidlist"
-}
-
-func GetItemsPath() string {
-	return GetWorkspaceDir() + "/" + DirItems
-}
-
-func GetListsPath() string {
-	return GetWorkspaceDir() + "/" + DirLists
 }

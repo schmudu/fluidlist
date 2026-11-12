@@ -79,6 +79,17 @@ func AppendToFile(path string, content []byte) error {
 	return nil
 }
 
+func GetFileContent(path string) ([]byte, error) {
+	// Read the entire file into a byte slice
+	data, err := os.ReadFile(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Convert the byte slice to a string
+	return data, nil
+}
+
 func CreateFolder(path string) error {
 	err := os.Mkdir(path, os.ModePerm)
 	if err != nil {
