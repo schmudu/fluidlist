@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 	"time"
 
@@ -41,10 +42,10 @@ func printItems(listName string) {
 }
 
 func printItemObjects(hashes []string) {
-	for _, hash := range hashes {
+	for _, hash := range slices.Backward(hashes) {
 		if hash != "" {
 			item, _ := getItemObject(hash)
-			fmt.Printf("%s %s\n", item.hash[0:7], item.description)
+			fmt.Printf("[%s] %s\n", item.hash[0:9], item.description)
 		}
 	}
 }
