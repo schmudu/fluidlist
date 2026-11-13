@@ -86,7 +86,6 @@ func GetFileContent(path string) ([]byte, error) {
 		log.Fatal(err)
 	}
 
-	// Convert the byte slice to a string
 	return data, nil
 }
 

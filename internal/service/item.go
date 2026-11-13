@@ -3,40 +3,68 @@ package service
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/schmudu/fluidlist/internal/common"
 )
+
+type Item struct {
+	hash        string
+	completed   bool
+	date        time.Time
+	description string
+}
 
 const (
 	ItemsDelimiter = ","
 )
 
 func ListItems() {
-	fmt.Println("ListItems")
 	listName, error := GetContext()
 	if error != nil {
 		fmt.Printf("Error getting context file: %s\n", error.Error())
 		return
 	}
-	var items []string
-	items, error = getItems(listName)
-	fmt.Printf("ListName: %s item:%s error:%s\n", listName, items, error)
+	printItems(listName)
 }
 
-func getItems(listName string) ([]string, error) {
-	content, error := common.GetFileContent(GetListsPath() + "/" + listName)
+func getItemHashes(listName string) ([]byte, error) {
+	return common.GetFileContent(GetListsPath() + "/" + listName)
+}
+
+func printItems(listName string) {
+	hashes, error := getItemHashes(listName)
 	if error != nil {
-		return nil, error
+		return
 	}
-	fmt.Println("content:", string(content))
-	fmt.Println("==========")
-	for _, item := range strings.Split(string(content), "\n") {
-		if item != "" {
-			fmt.Println(item)
+	printItemObjects(strings.Split(string(hashes), "\n"))
+}
+
+func printItemObjects(hashes []string) {
+	for _, hash := range hashes {
+		if hash != "" {
+			item, _ := getItemObject(hash)
+			fmt.Printf("%s %s\n", item.hash[0:7], item.description)
 		}
 	}
-	fmt.Println("==========")
-	return strings.Split(string(content), "\n"), nil
+}
+
+func getItemObject(hash string) (Item, error) {
+	itemPathFolder, itemPathFile := getItemPath(hash)
+	path := GetItemsPath() + "/" + itemPathFolder + "/" + itemPathFile
+	content, error := common.GetFileContent(path)
+	if error != nil {
+		return Item{}, error
+	}
+	item := buildItem(hash, content)
+	return item, nil
+}
+
+func buildItem(hash string, content []byte) Item {
+	data := strings.Split(string(content), ",")
+	date, _ := time.Parse(time.DateOnly, data[0])
+	completed := bool(data[1] == "true")
+	return Item{hash: hash, completed: completed, date: date, description: data[2]}
 }
 
 func AddItem(title []string) {
