@@ -20,32 +20,37 @@ const (
 	ItemsDelimiter = ","
 )
 
-func ListItems() {
+func ListItems(date bool) {
 	listName, error := GetContext()
 	if error != nil {
 		fmt.Printf("Error getting context file: %s\n", error.Error())
 		return
 	}
-	printItems(listName)
+	printItems(listName, date)
 }
 
 func getItemHashes(listName string) ([]byte, error) {
 	return common.GetFileContent(GetListsPath() + "/" + listName)
 }
 
-func printItems(listName string) {
+func printItems(listName string, date bool) {
 	hashes, error := getItemHashes(listName)
 	if error != nil {
 		return
 	}
-	printItemObjects(strings.Split(string(hashes), "\n"))
+	printItemObjects(strings.Split(string(hashes), "\n"), date)
 }
 
-func printItemObjects(hashes []string) {
+func printItemObjects(hashes []string, date bool) {
 	for _, hash := range slices.Backward(hashes) {
 		if hash != "" {
 			item, _ := getItemObject(hash)
-			fmt.Printf("[%s] %s\n", item.hash[0:9], item.description)
+			if date {
+				timeLayout := "Mon Jan 2 2006"
+				fmt.Printf("%s %s %s\n", item.hash, item.date.Format(timeLayout), item.description)
+			} else {
+				fmt.Printf("%s %s\n", item.hash, item.description)
+			}
 		}
 	}
 }

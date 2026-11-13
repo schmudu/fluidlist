@@ -4,8 +4,6 @@ Copyright © 2026 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/schmudu/fluidlist/internal/service"
 	"github.com/spf13/cobra"
 )
@@ -25,8 +23,7 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			return
 		}
-		fmt.Printf("date: %t\n", date)
-		service.ListItems()
+		service.ListItems(date)
 	},
 }
 
