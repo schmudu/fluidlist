@@ -47,7 +47,7 @@ func printItemObjects(hashes []string, date bool) {
 			item, _ := getItemObject(hash)
 			if date {
 				timeLayout := "Mon Jan 2 2006"
-				fmt.Printf("%s %s %s\n", item.hash, item.date.Format(timeLayout), item.description)
+				fmt.Printf("%s%s%s [%s] %s\n", common.Green, item.hash, common.Reset, item.date.Format(timeLayout), item.description)
 			} else {
 				fmt.Printf("%s %s\n", item.hash, item.description)
 			}

@@ -11,13 +11,8 @@ import (
 // itemsCmd represents the items command
 var itemsCmd = &cobra.Command{
 	Use:   "items",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "List items in current context",
+	Long:  `This command lists items in current context along with their hashes and dates.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		date, err := cmd.Flags().GetBool("date")
 		if err != nil {
