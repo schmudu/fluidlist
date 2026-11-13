@@ -4,6 +4,8 @@ Copyright © 2026 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/schmudu/fluidlist/internal/service"
 	"github.com/spf13/cobra"
 )
@@ -19,6 +21,11 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		date, err := cmd.Flags().GetBool("date")
+		if err != nil {
+			return
+		}
+		fmt.Printf("date: %t\n", date)
 		service.ListItems()
 	},
 }
@@ -35,4 +42,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// itemsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	itemsCmd.PersistentFlags().BoolP("date", "d", false, "Show date")
 }
