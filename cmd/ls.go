@@ -9,8 +9,8 @@ import (
 )
 
 // itemsCmd represents the items command
-var itemsCmd = &cobra.Command{
-	Use:   "items",
+var lsCmd = &cobra.Command{
+	Use:   "ls",
 	Short: "List items in current context",
 	Long:  `This command lists items in current context along with their hashes and dates.`,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -23,16 +23,16 @@ var itemsCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(itemsCmd)
+	rootCmd.AddCommand(lsCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// itemsCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// lsCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// itemsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	itemsCmd.PersistentFlags().BoolP("date", "d", false, "Show date")
+	// lsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	lsCmd.PersistentFlags().BoolP("date", "d", false, "Show date")
 }
