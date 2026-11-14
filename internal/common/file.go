@@ -1,9 +1,7 @@
 package common
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 	"os"
 )
@@ -24,36 +22,6 @@ func WriteFileBytes(path string, content []byte) error {
 		log.Fatalf("Failed to write file: %s", err)
 	}
 	return err
-}
-
-func WriteFile() {
-	data := User{Name: "Alice Smith", Email: "alice@example.com", Age: 30}
-
-	// 1. Create or open the file
-	file, err := os.Create("user.json")
-	if err != nil {
-		fmt.Printf("Error creating file: %v\n", err)
-		return
-	}
-	defer func(file *os.File) {
-		err := file.Close()
-		if err != nil {
-			fmt.Printf("Error closing file: %v\n", err)
-		}
-	}(file)
-
-	// 2. Initialize the encoder and write directly to the file
-	encoder := json.NewEncoder(file)
-
-	// Optional: Pretty-print the JSON output
-	encoder.SetIndent("", "  ")
-
-	if err := encoder.Encode(data); err != nil {
-		fmt.Printf("Error encoding JSON: %v\n", err)
-		return
-	}
-
-	fmt.Println("JSON file written successfully using NewEncoder!")
 }
 
 func FileExists(path string) bool {

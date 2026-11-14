@@ -18,7 +18,41 @@ type Item struct {
 
 const (
 	ItemsDelimiter = ","
+	HashMinLength  = 4
 )
+
+func RemoveItems(hashes []string) {
+	for _, hash := range hashes {
+		deleteItem(hash)
+	}
+}
+
+func deleteItem(hash string) {
+	itemFolder, itemFile := getItemPath(hash)
+	itemPath := itemFolder + "/" + itemFile
+	if !common.FileExists(itemPath) {
+		fmt.Printf("Item %s not found.\n", itemPath)
+	} else {
+		fmt.Printf("Removing item %s ...\n", itemPath)
+	}
+}
+
+func AddItem(title []string) {
+	checksum := common.GetChecksum([]byte(common.CurrentTimeEpoch()))
+	folder, file := getItemPath(checksum)
+
+	folderPath := GetItemsPath() + "/" + folder
+	common.CreateFolder(folderPath)
+
+	titleBytes := []byte(strings.Join(title, " "))
+	date := common.CurrentTimeDateOnly()
+	completed := getDefaultCompletion()
+	common.WriteFileBytes(folderPath+"/"+file, append([]byte(date+ItemsDelimiter+completed+ItemsDelimiter), titleBytes...))
+
+	// write checksum to list
+	listPath := GetListsPath() + "/" + "default"
+	common.AppendToFile(listPath, []byte(checksum))
+}
 
 func ListItems(date bool) {
 	listName, error := GetContext()
@@ -56,7 +90,7 @@ func printItemObjects(hashes []string, date bool) {
 }
 
 func getItemObject(hash string) (Item, error) {
-	itemPathFolder, itemPathFile := getItemPath(hash)
+	itemPathFolder, itemPathFile, error := getItemPath(hash)
 	path := GetItemsPath() + "/" + itemPathFolder + "/" + itemPathFile
 	content, error := common.GetFileContent(path)
 	if error != nil {
@@ -73,27 +107,13 @@ func buildItem(hash string, content []byte) Item {
 	return Item{hash: hash, completed: completed, date: date, description: data[2]}
 }
 
-func AddItem(title []string) {
-	checksum := common.GetChecksum([]byte(common.CurrentTimeEpoch()))
-	folder, file := getItemPath(checksum)
-
-	folderPath := GetItemsPath() + "/" + folder
-	common.CreateFolder(folderPath)
-
-	titleBytes := []byte(strings.Join(title, " "))
-	date := common.CurrentTimeDateOnly()
-	completed := getDefaultCompletion()
-	common.WriteFileBytes(folderPath+"/"+file, append([]byte(date+ItemsDelimiter+completed+ItemsDelimiter), titleBytes...))
-
-	// write checksum to list
-	listPath := GetListsPath() + "/" + "default"
-	common.AppendToFile(listPath, []byte(checksum))
-}
-
 func getDefaultCompletion() string {
 	return "false"
 }
 
-func getItemPath(checksum string) (string, string) {
-	return checksum[0:4], checksum[4:]
+func getItemPath(checksum string) (string, string, error) {
+	if len(checksum) < HashMinLength {
+		return "", "", nil
+	}
+	return checksum[0:HashMinLength], checksum[HashMinLength:], nil
 }
