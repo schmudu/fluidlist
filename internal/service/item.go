@@ -28,26 +28,39 @@ func RemoveItems(hashes []string) {
 }
 
 func deleteItem(hash string) {
-	itemFolder, itemFile := getItemPath(hash)
-	itemPath := itemFolder + "/" + itemFile
-	if !common.FileExists(itemPath) {
-		fmt.Printf("Item %s not found.\n", itemPath)
-	} else {
-		fmt.Printf("Removing item %s ...\n", itemPath)
-	}
+	// STUB
+	/*
+		itemFolder, itemFile := getItemPath(hash)
+		itemPath := itemFolder + "/" + itemFile
+		if !common.FileExists(itemPath) {
+			fmt.Printf("Item %s not found.\n", itemPath)
+		} else {
+			fmt.Printf("Removing item %s ...\n", itemPath)
+		}
+	*/
 }
 
-func AddItem(title []string) {
+func AddItem(title string, date string) {
 	checksum := common.GetChecksum([]byte(common.CurrentTimeEpoch()))
 	folder, file := getItemPath(checksum)
+
+	//titleBytes := []byte(strings.Join(title, " "))
+	//date := common.CurrentTimeDateOnly()
+	// parse time
+	itemDate, error := common.ParseTime(date)
+	if error != nil {
+		fmt.Printf("Error parsing date %s\n", date)
+		return
+	}
+
+	// completion
+	completed := getDefaultCompletion()
 
 	folderPath := GetItemsPath() + "/" + folder
 	common.CreateFolder(folderPath)
 
-	titleBytes := []byte(strings.Join(title, " "))
-	date := common.CurrentTimeDateOnly()
-	completed := getDefaultCompletion()
-	common.WriteFileBytes(folderPath+"/"+file, append([]byte(date+ItemsDelimiter+completed+ItemsDelimiter), titleBytes...))
+	// write file
+	common.WriteFileBytes(folderPath+"/"+file, append([]byte(itemDate+ItemsDelimiter+completed+ItemsDelimiter), []byte(title)...))
 
 	// write checksum to list
 	listPath := GetListsPath() + "/" + "default"
@@ -90,7 +103,7 @@ func printItemObjects(hashes []string, date bool) {
 }
 
 func getItemObject(hash string) (Item, error) {
-	itemPathFolder, itemPathFile, error := getItemPath(hash)
+	itemPathFolder, itemPathFile := getItemPath(hash)
 	path := GetItemsPath() + "/" + itemPathFolder + "/" + itemPathFile
 	content, error := common.GetFileContent(path)
 	if error != nil {
@@ -111,9 +124,9 @@ func getDefaultCompletion() string {
 	return "false"
 }
 
-func getItemPath(checksum string) (string, string, error) {
+func getItemPath(checksum string) (string, string) {
 	if len(checksum) < HashMinLength {
-		return "", "", nil
+		return "", ""
 	}
-	return checksum[0:HashMinLength], checksum[HashMinLength:], nil
+	return checksum[0:HashMinLength], checksum[HashMinLength:]
 }
