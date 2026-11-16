@@ -10,9 +10,9 @@ const (
 
 func GetContext() (string, error) {
 	workspaceDir := GetWorkspaceDir()
-	content, error := common.GetFileContent(workspaceDir + "/" + ContextFile)
+	content, error := common.ReadFile(workspaceDir + "/" + ContextFile)
 	if error != nil {
 		return "", error
 	}
-	return string(content), nil
+	return content[0], nil
 }

@@ -44,12 +44,10 @@ func AddItem(title string, date string) {
 	checksum := common.GetChecksum([]byte(common.CurrentTimeEpoch()))
 	folder, file := getItemPath(checksum)
 
-	//titleBytes := []byte(strings.Join(title, " "))
-	//date := common.CurrentTimeDateOnly()
 	// parse time
-	itemDate, error := common.ParseTime(date)
+	itemDate, insertionRequired, error := common.ParseTime(date)
 	if error != nil {
-		fmt.Printf("Error parsing date %s\n", date)
+		fmt.Printf("ERROR: Unable to insert item due to error: %s\n", error)
 		return
 	}
 
@@ -60,11 +58,15 @@ func AddItem(title string, date string) {
 	common.CreateFolder(folderPath)
 
 	// write file
-	common.WriteFileBytes(folderPath+"/"+file, append([]byte(itemDate+ItemsDelimiter+completed+ItemsDelimiter), []byte(title)...))
+	common.WriteFileBytes(folderPath+"/"+file, append([]byte(itemDate.Format(time.DateOnly)+ItemsDelimiter+completed+ItemsDelimiter), []byte(title)...))
 
-	// write checksum to list
+	// get path to list
 	listPath := GetListsPath() + "/" + "default"
-	common.AppendToFile(listPath, []byte(checksum))
+	if insertionRequired {
+		common.InsertIntoFile(listPath, []byte(checksum), itemDate)
+	} else {
+		common.AppendToFile(listPath, []byte(checksum))
+	}
 }
 
 func ListItems(date bool) {
@@ -76,8 +78,8 @@ func ListItems(date bool) {
 	printItems(listName, date)
 }
 
-func getItemHashes(listName string) ([]byte, error) {
-	return common.GetFileContent(GetListsPath() + "/" + listName)
+func getItemHashes(listName string) ([]string, error) {
+	return common.ReadFile(GetListsPath() + "/" + listName)
 }
 
 func printItems(listName string, date bool) {
@@ -85,7 +87,7 @@ func printItems(listName string, date bool) {
 	if error != nil {
 		return
 	}
-	printItemObjects(strings.Split(string(hashes), "\n"), date)
+	printItemObjects(hashes, date)
 }
 
 func printItemObjects(hashes []string, date bool) {
@@ -105,16 +107,16 @@ func printItemObjects(hashes []string, date bool) {
 func getItemObject(hash string) (Item, error) {
 	itemPathFolder, itemPathFile := getItemPath(hash)
 	path := GetItemsPath() + "/" + itemPathFolder + "/" + itemPathFile
-	content, error := common.GetFileContent(path)
+	content, error := common.ReadFile(path)
 	if error != nil {
 		return Item{}, error
 	}
-	item := buildItem(hash, content)
+	item := buildItem(hash, content[0])
 	return item, nil
 }
 
-func buildItem(hash string, content []byte) Item {
-	data := strings.Split(string(content), ",")
+func buildItem(hash string, content string) Item {
+	data := strings.Split(content, ",")
 	date, _ := time.Parse(time.DateOnly, data[0])
 	completed := bool(data[1] == "true")
 	return Item{hash: hash, completed: completed, date: date, description: data[2]}
