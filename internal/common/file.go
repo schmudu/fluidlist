@@ -3,10 +3,8 @@ package common
 import (
 	"bufio"
 	"errors"
-	"fmt"
 	"log"
 	"os"
-	"time"
 )
 
 type User struct {
@@ -47,42 +45,6 @@ func AppendToFile(path string, content []byte) error {
 	if _, err := f.WriteString(string(content) + "\n"); err != nil {
 		log.Fatal(err)
 	}
-	return nil
-}
-
-func InsertIntoFile(path string, content []byte, itemDate time.Time) error {
-	fmt.Printf("Need to insert %s into file\n", itemDate)
-	checksumList, error := ReadFile(path)
-	if error != nil {
-		return error
-	}
-
-	for _, item := range checksumList {
-		fmt.Printf("===%s\n", item)
-	}
-
-	/*
-		fmt.Printf("Number of lines: %d\n", numberOfLines)
-		var insertComplete bool = false
-		var targetLine uint64 = uint64(int(numberOfLines / 2))
-		for !insertComplete {
-			fmt.Printf("Going to attempt to insert into line %d\n", targetLine)
-			break
-		}
-	*/
-	/*
-		// Open the file in append mode, creating it if it doesn't exist
-		f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer f.Close()
-
-		// Append text to the file
-		if _, err := f.WriteString(string(content) + "\n"); err != nil {
-			log.Fatal(err)
-		}
-	*/
 	return nil
 }
 

@@ -63,10 +63,58 @@ func AddItem(title string, date string) {
 	// get path to list
 	listPath := GetListsPath() + "/" + "default"
 	if insertionRequired {
-		common.InsertIntoFile(listPath, []byte(checksum), itemDate)
+		insertIntoFile(listPath, []byte(checksum), itemDate)
 	} else {
 		common.AppendToFile(listPath, []byte(checksum))
 	}
+}
+
+func insertIntoFile(path string, content []byte, itemDate time.Time) error {
+	fmt.Printf("Need to insert %s into file\n", itemDate)
+	checksumList, error := common.ReadFile(path)
+	if error != nil {
+		return error
+	}
+
+	for index, item := range checksumList {
+		fmt.Printf("===i:%d hash:%s\n", index, item)
+	}
+
+	insertIndex, error := finditemIndex(itemDate, checksumList, 0, len(checksumList)-1)
+	fmt.Printf("===insert index:%d\n", insertIndex)
+
+	return nil
+}
+
+func finditemIndex(itemDate time.Time, checksumList []string, startIndex int, endIndex int) (int, error) {
+	// uses binary insertion algorithm to find index to insert item
+	// the insertion index is based on the item creation date
+	// if checksumList is empty, then return first spot
+	if len(checksumList) == 0 {
+		return 0, nil
+	}
+
+	nextPotentialIndexMatch := (startIndex + endIndex) / 2
+
+	nextPotentialDate := getItemDateFromHash(checksumList[nextPotentialIndexMatch])
+	fmt.Printf("====potential index: %d date:%s\n", nextPotentialIndexMatch, nextPotentialDate)
+	if nextPotentialIndexMatch == startIndex {
+		if itemDate.After(nextPotentialDate) {
+			return startIndex + 1, nil
+		} else {
+			return startIndex, nil
+		}
+	} else if itemDate.After(nextPotentialDate) {
+		// if potential index matches start index, then return
+		return finditemIndex(itemDate, checksumList, nextPotentialIndexMatch, endIndex)
+	} else {
+		return finditemIndex(itemDate, checksumList, startIndex, nextPotentialIndexMatch)
+	}
+}
+
+func getItemDateFromHash(hash string) time.Time {
+	item, _ := getItemObject(hash)
+	return item.date
 }
 
 func ListItems(date bool) {
