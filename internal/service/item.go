@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"os"
 	"slices"
 	"strings"
 	"time"
@@ -63,13 +64,13 @@ func AddItem(title string, date string) {
 	// get path to list
 	listPath := GetListsPath() + "/" + "default"
 	if insertionRequired {
-		insertIntoFile(listPath, []byte(checksum), itemDate)
+		insertIntoFile(listPath, checksum, itemDate)
 	} else {
-		common.AppendToFile(listPath, []byte(checksum))
+		common.AppendToFile(listPath, checksum)
 	}
 }
 
-func insertIntoFile(path string, content []byte, itemDate time.Time) error {
+func insertIntoFile(path string, checksum string, itemDate time.Time) error {
 	fmt.Printf("Need to insert %s into file\n", itemDate)
 	checksumList, error := common.ReadFile(path)
 	if error != nil {
@@ -81,9 +82,30 @@ func insertIntoFile(path string, content []byte, itemDate time.Time) error {
 	}
 
 	insertIndex, error := finditemIndex(itemDate, checksumList, 0, len(checksumList)-1)
-	fmt.Printf("===insert index:%d\n", insertIndex)
+	fmt.Printf("===insert index:%d newLine:%s\n", insertIndex, checksum)
+	insertLine(path, insertIndex, checksum)
 
 	return nil
+}
+
+// insertLine inserts text at a 0-based line index.
+func insertLine(filePath string, lineIndex int, newLine string) error {
+	content, err := os.ReadFile(filePath)
+	if err != nil {
+		return err
+	}
+
+	lines := strings.Split(string(content), "\n")
+
+	if lineIndex < 0 || lineIndex > len(lines) {
+		return fmt.Errorf("line index %d out of range (0-%d)", lineIndex, len(lines))
+	}
+
+	// Insert the new line at the target index
+	lines = slices.Insert(lines, lineIndex, newLine)
+
+	output := strings.Join(lines, "\n")
+	return os.WriteFile(filePath, []byte(output), 0644)
 }
 
 func finditemIndex(itemDate time.Time, checksumList []string, startIndex int, endIndex int) (int, error) {

@@ -33,7 +33,7 @@ func FileExists(path string) bool {
 	return !info.IsDir()
 }
 
-func AppendToFile(path string, content []byte) error {
+func AppendToFile(path string, content string) error {
 	// Open the file in append mode, creating it if it doesn't exist
 	f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
@@ -42,7 +42,7 @@ func AppendToFile(path string, content []byte) error {
 	defer f.Close()
 
 	// Append text to the file
-	if _, err := f.WriteString(string(content) + "\n"); err != nil {
+	if _, err := f.WriteString(content + "\n"); err != nil {
 		log.Fatal(err)
 	}
 	return nil
