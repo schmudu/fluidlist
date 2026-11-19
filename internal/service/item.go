@@ -77,12 +77,7 @@ func insertIntoFile(path string, checksum string, itemDate time.Time) error {
 		return error
 	}
 
-	for index, item := range checksumList {
-		fmt.Printf("===i:%d hash:%s\n", index, item)
-	}
-
 	insertIndex, error := finditemIndex(itemDate, checksumList, 0, len(checksumList)-1)
-	fmt.Printf("===insert index:%d newLine:%s\n", insertIndex, checksum)
 	insertLine(path, insertIndex, checksum)
 
 	return nil
@@ -165,8 +160,18 @@ func printItemObjects(hashes []string, date bool) {
 		if hash != "" {
 			item, _ := getItemObject(hash)
 			if date {
-				timeLayout := "Mon Jan 2 2006"
-				fmt.Printf("%s%s%s [%s] %s\n", common.Green, item.hash, common.Reset, item.date.Format(timeLayout), item.description)
+				//timeLayout := "Mon Jan 2 2006"
+				fmt.Printf("%s%s%s %s%3s %3s %2s %4s%s %s\n",
+					common.Green,
+					item.hash,
+					common.Reset,
+					common.Blue,
+					item.date.Format("Mon"),
+					item.date.Format("Nov"),
+					item.date.Format("2"),
+					item.date.Format("2006"),
+					common.Reset,
+					item.description)
 			} else {
 				fmt.Printf("%s %s\n", item.hash, item.description)
 			}
