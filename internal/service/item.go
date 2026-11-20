@@ -22,13 +22,35 @@ const (
 	HashMinLength  = 4
 )
 
-func RemoveItems(hashes []string) {
+func RemoveItems(listPath string, hashes []string) {
+	validItems := make(map[string]bool)
+
+	// validate file exists
 	for _, hash := range hashes {
-		deleteItem(hash)
+		path := buildItemPath(hash)
+		ok := common.FileExists(path)
+
+		// to make it more efficient, create a map of all the items to delete,
+		// then have a whitelist to delete when traversing the list of items
+		if ok {
+			validItems[hash] = true
+		} else {
+			fmt.Printf("Item with checksum %s does not exist.  Skipping item deletion.\n", hash)
+		}
 	}
+
+	// remove items from list
+	deleteItemsFromList(listPath, validItems)
+
 }
 
-func deleteItem(hash string) {
+func deleteItemsFromList(listPath string, hashes map[string]bool) {
+	error := common.DeleteHashesInFile(listPath, hashes)
+	if error != nil {
+		fmt.Printf("Error deleting hashes: %s\n", error.Error())
+		return
+	}
+	// validate that checksum in list file
 	// STUB
 	/*
 		itemFolder, itemFile := getItemPath(hash)
@@ -201,7 +223,16 @@ func getDefaultCompletion() string {
 	return "false"
 }
 
+func buildItemPath(checksum string) string {
+	// returns folder, filename
+	if len(checksum) < HashMinLength {
+		return ""
+	}
+	return GetItemsPath() + "/" + checksum[0:HashMinLength] + "/" + checksum[HashMinLength:]
+}
+
 func getItemPath(checksum string) (string, string) {
+	// returns folder, filename
 	if len(checksum) < HashMinLength {
 		return "", ""
 	}

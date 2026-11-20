@@ -35,6 +35,16 @@ func InitializeWorkspace() {
 	initializeDirs(workspaceDir)
 }
 
+func GetCurrentListPath() (string, error) {
+	// read current context file and return path to list
+	listTitle, error := common.ReadFile(GetWorkspaceDir() + "/" + ContextFile)
+	if error != nil {
+		return "", error
+	}
+
+	return GetListsPath() + "/" + listTitle[0], nil
+}
+
 func initializeDir(folderPath string) bool {
 	var dirCreated = false
 	errors := common.CreateFolder(folderPath)

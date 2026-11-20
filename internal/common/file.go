@@ -5,13 +5,8 @@ import (
 	"errors"
 	"log"
 	"os"
+	"strings"
 )
-
-type User struct {
-	Name  string `json:"name"`
-	Email string `json:"email"`
-	Age   int    `json:"age"`
-}
 
 func GetChecksumFilepath(checksum string) {
 
@@ -80,4 +75,24 @@ func FolderExists(path string) bool {
 		}
 	}
 	return false
+}
+
+func DeleteHashesInFile(filePath string, hashes map[string]bool) error {
+	// if line in file matches then delete it
+	content, err := os.ReadFile(filePath)
+	if err != nil {
+		return err
+	}
+
+	lines := strings.Split(string(content), "\n")
+	var updatedLines []string
+
+	for _, line := range lines {
+		if !hashes[line] {
+			updatedLines = append(updatedLines, line)
+		}
+	}
+
+	output := strings.Join(updatedLines, "\n")
+	return os.WriteFile(filePath, []byte(output), 0644)
 }

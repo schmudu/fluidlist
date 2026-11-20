@@ -10,23 +10,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// itemCmd represents the item command
+// rmCmd represents the rm command
 var rmCmd = &cobra.Command{
 	Use:   "rm",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Remove item",
+	Long:  `Remove item from current list.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 {
-			fmt.Println("No item specified")
-			return
+		listPath, error := service.GetCurrentListPath()
+		if error != nil {
+			fmt.Printf("Error: %v\n", error.Error())
 		}
-
-		service.RemoveItems(args)
+		service.RemoveItems(listPath, args)
 	},
 }
 
