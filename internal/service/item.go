@@ -50,17 +50,11 @@ func deleteItemsFromList(listPath string, hashes map[string]bool) {
 		fmt.Printf("Error deleting hashes: %s\n", error.Error())
 		return
 	}
-	// validate that checksum in list file
-	// STUB
-	/*
-		itemFolder, itemFile := getItemPath(hash)
-		itemPath := itemFolder + "/" + itemFile
-		if !common.FileExists(itemPath) {
-			fmt.Printf("Item %s not found.\n", itemPath)
-		} else {
-			fmt.Printf("Removing item %s ...\n", itemPath)
-		}
-	*/
+
+	// delete files
+	for hash, _ := range hashes {
+		common.RemoveFile(buildItemPath(hash))
+	}
 }
 
 func AddItem(title string, date string) {

@@ -3,6 +3,7 @@ package common
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -75,6 +76,15 @@ func FolderExists(path string) bool {
 		}
 	}
 	return false
+}
+
+func RemoveFile(path string) error {
+	err := os.Remove(path)
+	if err != nil {
+		fmt.Println("Error deleting file:", err)
+		return err
+	}
+	return nil
 }
 
 func DeleteHashesInFile(filePath string, hashes map[string]bool) error {
